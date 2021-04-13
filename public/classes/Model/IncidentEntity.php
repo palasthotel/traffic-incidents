@@ -5,9 +5,12 @@ namespace Palasthotel\WordPress\TrafficIncidents\Model;
 
 
 use DateTime;
+use DateTimeZone;
+use Exception;
 
 /**
  * @property  string id
+ * @property int traffic_model_id
  * @property  int post_id
  * @property  string incident_id
  * @property string description
@@ -32,13 +35,18 @@ class IncidentEntity {
 	var $delayInSeconds = 0;
 	var $lengthInMeters = 0;
 
-	public function __construct( $incident_id, $post_id ) {
-		$this->id      = $incident_id;
-		$this->post_id = $post_id;
+	private $timezone;
+
+	private function __construct( $incident_id, $traffic_model_id, $post_id ) {
+		$this->id               = $incident_id;
+		$this->traffic_model_id = $traffic_model_id;
+		$this->post_id          = $post_id;
+
+		$this->timezone = new DateTimeZone( wp_timezone_string() );
 	}
 
-	public static function build( $incident_id, $post_id ) {
-		return new static( $incident_id, $post_id );
+	public static function build( $incident_id, $traffic_model_id, $post_id ) {
+		return new static( $incident_id, $traffic_model_id, $post_id );
 	}
 
 	public function description( string $value ) {
@@ -59,20 +67,37 @@ class IncidentEntity {
 		return $this;
 	}
 
-	public function start( $datetime ) {
-		try {
-			$this->start = new DateTime( $datetime );
-		} catch ( \Exception $e ) {
+	public function start( $datetimeOrUTCString ) {
+
+		if ( $datetimeOrUTCString instanceof DateTime ) {
+			$this->start = new DateTime();
+			$this->start->setTimestamp( $datetimeOrUTCString->getTimestamp() );
+			$this->start->setTimezone( $this->timezone );
+		} else if ( is_string( $datetimeOrUTCString ) ) {
+			try {
+				$this->start = new DateTime( $datetimeOrUTCString );
+				$this->start->setTimezone( $this->timezone );
+			} catch ( Exception $e ) {
+			}
+		} else {
 			$this->start = null;
 		}
 
 		return $this;
 	}
 
-	public function end( $datetime ) {
-		try {
-			$this->end = new DateTime( $datetime );
-		} catch ( \Exception $e ) {
+	public function end( $datetimeOrUTCString ) {
+		if ( $datetimeOrUTCString instanceof DateTime ) {
+			$this->end = new DateTime();
+			$this->end->setTimestamp( $datetimeOrUTCString->getTimestamp() );
+			$this->end->setTimezone( $this->timezone );
+		} else if ( is_string( $datetimeOrUTCString ) ) {
+			try {
+				$this->end = new DateTime( $datetimeOrUTCString );
+				$this->end->setTimezone( $this->timezone );
+			} catch ( Exception $e ) {
+			}
+		} else {
 			$this->end = null;
 		}
 

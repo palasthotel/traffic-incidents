@@ -67,13 +67,40 @@ class PostTypeTraffic extends _Component {
 		echo "<input type='text' name='$name' value='$bb' style='width: 100%' />";
 		echo "</label>";
 
-		$incidents = $this->plugin->repo->getIncidents($post->ID);
+		$incidents = $this->plugin->repo->getIncidents( $post->ID );
 
 		echo "<h2>Incidents</h2>";
 		echo "<ul>";
-		foreach ($incidents as $incident){
-		    echo "<li>$incident->description</li>";
-        }
+		foreach ( $incidents as $incident ) {
+
+			echo "<li>";
+			echo "<div>";
+			echo $incident->description;
+			echo "</div>";
+			if ( $incident->start ) {
+				echo "<div>";
+				printf(
+					__( "Started: %s", Plugin::DOMAIN ),
+					$incident->start->format( "H:i:s" )
+				);
+				if ( $incident->end ) {
+					printf(
+						__(" -> will approximatly end: %s", Plugin::DOMAIN),
+						$incident->end->format( "H:i:s" )
+					);
+				}
+				echo "</div>";
+			}
+			echo "<div>";
+			printf(
+				__( "From <b>%s</b> to <b>%s</b>", Plugin::DOMAIN),
+				$incident->intersectionFrom,
+				$incident->intersectionTo
+			);
+			echo "</div>";
+
+			echo "</li>";
+		}
 		echo "</ul>";
 	}
 
@@ -84,7 +111,7 @@ class PostTypeTraffic extends _Component {
 				sanitize_text_field( $_POST[ Plugin::POST_META_BOUNDING_BOX ] )
 			)
 		);
-		$this->plugin->repo->fetchIncidents($post_id);
+		$this->plugin->repo->fetchIncidents( $post_id );
 	}
 
 

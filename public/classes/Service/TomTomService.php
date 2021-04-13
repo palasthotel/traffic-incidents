@@ -4,24 +4,24 @@
 namespace Palasthotel\WordPress\TrafficIncidents\Service;
 
 
-use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentRequestArgs;
-use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsResponse;
+use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
+use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficIncidentResponse;
 
 /**
  * @property string baseUrl
  * @property string apiKey
  */
-class TomTomTrafficIncidents {
+class TomTomService {
 
 	public function __construct($apiKey) {
 		$this->apiKey = $apiKey;
 	}
 
-	private function getUrl(TomTomIncidentRequestArgs $args): string {
+	private function getUrl(TomTomIncidentsRequestArgs $args): string {
 		$boundingBox = $args->boundingBox;
 		$zoom = $args->zoom;
-		$modelId = $args->modelId;
+		$modelId = $args->trafficModelId;
 		$format = $args->format;
 		$version = $args->version;
 		$style = $args->style;
@@ -31,7 +31,7 @@ class TomTomTrafficIncidents {
 		return "$url?projection=$projection&language=$lang&key=$this->apiKey";
 	}
 
-	public function getIncidents(TomTomIncidentRequestArgs $args){
+	public function getIncidents(TomTomIncidentsRequestArgs $args){
 		$url = $this->getUrl($args);
 		$response = wp_remote_get($url);
 		if(is_wp_error($response)){
@@ -51,7 +51,7 @@ class TomTomTrafficIncidents {
 			return TomTomTrafficIncidentResponse::from($json);
 		}, $json->tm->poi);
 
-		return new TomTomIncidentsResponse($id, $items);
+		return new TomTomTrafficResponse($id, $items);
 	}
 
 }

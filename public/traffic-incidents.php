@@ -27,6 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @property PostTypeTraffic postTypeTraffic
  * @property Repository repo
  * @property Settings settings
+ * @property Schedule schedule
  */
 class Plugin {
 
@@ -34,10 +35,13 @@ class Plugin {
 
 	const OPTION_TOM_TOM_API_KEY = "_tom_tom_api_key";
 
+	const POST_META_LAST_TRAFFIC_MODEL_ID = "_tom_tom_last_traffic_model_id";
 	const POST_META_BOUNDING_BOX = "_traffic_incidents_bounding_box";
 
 	const FILTER_CPT_TRAFFIC_SLUG = "traffic_incidents_cpt_traffic_slug";
 	const FILTER_CPT_TRAFFIC_ARGS = "traffic_incidents_cpt_traffic_args";
+
+	const SCHEDULE_FETCH_TRAFFIC_UPDATE = "traffic_incidents_fetch_update";
 
 	private function __construct() {
 
@@ -62,7 +66,7 @@ class Plugin {
 		$this->postTypeTraffic = new PostTypeTraffic( $this );
 		$this->repo            = new Repository( $this );
 		$this->settings        = new Settings( $this );
-
+		$this->schedule        = new Schedule( $this );
 
 		// for regeneration of permalinks after plugin activation/deactivation
 		register_activation_hook( __FILE__, array( $this, "activation" ) );
@@ -79,6 +83,7 @@ class Plugin {
 	 */
 	function activation() {
 		$this->repo->database->createTable();
+		$this->schedule->schedule();
 	}
 
 	/**

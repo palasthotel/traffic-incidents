@@ -7,27 +7,27 @@ namespace Palasthotel\WordPress\TrafficIncidents\Model;
 /**
  * @property int zoom
  * @property BoundingBox boundingBox
- * @property int modelId
+ * @property int $trafficModelId
  * @property string format
  * @property string style
  * @property int version
  * @property string projection
  * @property string language
  */
-class TomTomIncidentRequestArgs {
+class TomTomIncidentsRequestArgs {
 
 	private function __construct( BoundingBox $boundingBox ) {
-		$this->version     = 4;
-		$this->boundingBox = $boundingBox;
-		$this->zoom        = 10;
-		$this->modelId     = - 1;
-		$this->format      = "json";
-		$this->style       = "night";
-		$this->projection  = "EPSG4326";
-		$this->language    = substr(get_locale(), 0, 2);
+		$this->version        = 4;
+		$this->boundingBox    = $boundingBox;
+		$this->zoom           = 10;
+		$this->trafficModelId = - 1;
+		$this->format         = "json";
+		$this->style          = "night";
+		$this->projection     = "EPSG4326";
+		$this->language       = substr(get_locale(), 0, 2);
 	}
 
-	public static function build( BoundingBox $bounding_box ): TomTomIncidentRequestArgs {
+	public static function build( BoundingBox $bounding_box ): TomTomIncidentsRequestArgs {
 		return new static( $bounding_box );
 	}
 
@@ -37,8 +37,8 @@ class TomTomIncidentRequestArgs {
 		return $this;
 	}
 
-	public function modelId( int $modelId ): self {
-		$this->modelId = $modelId;
+	public function trafficModelId( int $modelId ): self {
+		$this->trafficModelId = $modelId;
 
 		return $this;
 	}

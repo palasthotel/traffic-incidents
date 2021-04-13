@@ -4,13 +4,16 @@
 namespace Palasthotel\WordPress\TrafficIncidents\Model;
 
 
+use DateTime;
+use Exception;
+
 /**
  * @property  string $id
  * @property  int $category
  * @property  int $delayMagnitude
  * @property  string $description
- * @property string $startDate
- * @property string $endDate
+ * @property null|DateTime $startDate
+ * @property null|DateTime $endDate
  * @property string $intersectionFrom
  * @property string $intersectionTo
  * @property int $lengthInMeters
@@ -34,6 +37,12 @@ class TomTomTrafficIncidentResponse {
 	const IC_CLUSTER = 13;
 	const IC_BROKEN_DOWN_VEHICLE = 14;
 
+	const MAGNITUDE_UNKNOWN = 0;
+	const MAGNITUDE_MINOR = 1;
+	const MAGNITUDE_MODERATE = 2;
+	const MAGNITUDE_MAJOR = 3;
+	const MAGNITUDE_UNDEFINED = 4; // road closed or other indefinite delays
+
 	// https://developer.tomtom.com/traffic-api/traffic-api-documentation-traffic-incidents/incident-details#response-data
 	public static function from( $json ) {
 		$incident                   = new TomTomTrafficIncidentResponse();
@@ -42,7 +51,21 @@ class TomTomTrafficIncidentResponse {
 		$incident->delayMagnitude   = $json->ty;
 		$incident->description      = $json->d;
 		$incident->startDate        = $json->sd;
-		$incident->endDate          = $json->ed ?? null;
+		if(isset($json->sd)){
+			try {
+				// date in UTC
+				$incident->startDate = new DateTime( $json->sd );
+			} catch ( Exception $e ) {
+			}
+		}
+		$incident->endDate          = null;
+		if(isset($json->ed)){
+			try {
+				// date in UTC
+				$incident->endDate = new DateTime( $json->ed );
+			} catch ( Exception $e ) {
+			}
+		}
 		$incident->intersectionFrom = $json->f;
 		$incident->intersectionTo   = $json->t;
 		$incident->lengthInMeters   = $json->l;

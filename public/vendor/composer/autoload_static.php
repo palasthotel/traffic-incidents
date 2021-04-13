@@ -26,12 +26,13 @@ class ComposerStaticInitb4cf5b06d1a8ad275a8d91a9bdaee356
         'Palasthotel\\WordPress\\TrafficIncidents\\Data\\PostTypeTraffic' => __DIR__ . '/../..' . '/classes/Data/PostTypeTraffic.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\Model\\BoundingBox' => __DIR__ . '/../..' . '/classes/Model/BoundingBox.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\Model\\IncidentEntity' => __DIR__ . '/../..' . '/classes/Model/IncidentEntity.php',
-        'Palasthotel\\WordPress\\TrafficIncidents\\Model\\TomTomIncidentRequestArgs' => __DIR__ . '/../..' . '/classes/Model/TomTomIncidentRequestArgs.php',
-        'Palasthotel\\WordPress\\TrafficIncidents\\Model\\TomTomIncidentsResponse' => __DIR__ . '/../..' . '/classes/Model/TomTomIncidentsResponse.php',
+        'Palasthotel\\WordPress\\TrafficIncidents\\Model\\TomTomIncidentsRequestArgs' => __DIR__ . '/../..' . '/classes/Model/TomTomIncidentsRequestArgs.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\Model\\TomTomTrafficIncidentResponse' => __DIR__ . '/../..' . '/classes/Model/TomTomTrafficIncidentResponse.php',
+        'Palasthotel\\WordPress\\TrafficIncidents\\Model\\TomTomTrafficResponse' => __DIR__ . '/../..' . '/classes/Model/TomTomTrafficResponse.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\Repository' => __DIR__ . '/../..' . '/classes/Repository.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\Schedule' => __DIR__ . '/../..' . '/classes/Schedule.php',
-        'Palasthotel\\WordPress\\TrafficIncidents\\Service\\TomTomTrafficIncidents' => __DIR__ . '/../..' . '/classes/Service/TomTomTrafficIncidents.php',
+        'Palasthotel\\WordPress\\TrafficIncidents\\Service\\TomTomService' => __DIR__ . '/../..' . '/classes/Service/TomTomService.php',
+        'Palasthotel\\WordPress\\TrafficIncidents\\Settings' => __DIR__ . '/../..' . '/classes/Settings.php',
         'Palasthotel\\WordPress\\TrafficIncidents\\_Component' => __DIR__ . '/../..' . '/classes/_Component.php',
     );
 
