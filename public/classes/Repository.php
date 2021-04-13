@@ -42,7 +42,7 @@ class Repository extends _Component {
 	public function fetchIncidents( $post_id ) {
 		$bb = $this->plugin->postTypeTraffic->getBoundingBox( $post_id );
 		if ( ! ( $bb instanceof BoundingBox ) ) {
-			return [];
+			return;
 		}
 
 		$trafficModelId = intval(get_post_meta( $post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, true ));
