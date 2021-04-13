@@ -24,7 +24,7 @@ class TomTomIncidentsRequestArgs {
 		$this->format         = "json";
 		$this->style          = "night";
 		$this->projection     = "EPSG4326";
-		$this->language       = substr(get_locale(), 0, 2);
+		$this->language       = substr( get_locale(), 0, 2 );
 	}
 
 	public static function build( BoundingBox $bounding_box ): TomTomIncidentsRequestArgs {

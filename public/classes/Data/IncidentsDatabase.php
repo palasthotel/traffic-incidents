@@ -25,16 +25,16 @@ class IncidentsDatabase {
 
 	public function save( IncidentEntity $incident ) {
 		$start = null;
-		if($incident->start instanceof DateTime){
+		if ( $incident->start instanceof DateTime ) {
 			$start = new DateTime();
-			$start->setTimestamp($incident->start->getTimestamp());
-			$start = $start->format(self::DATE_TIME_FORMAT);
+			$start->setTimestamp( $incident->start->getTimestamp() );
+			$start = $start->format( self::DATE_TIME_FORMAT );
 		}
 		$end = null;
-		if($incident->end instanceof DateTime){
+		if ( $incident->end instanceof DateTime ) {
 			$end = new DateTime();
-			$end->setTimestamp($incident->end->getTimestamp());
-			$end = $end->format(self::DATE_TIME_FORMAT);
+			$end->setTimestamp( $incident->end->getTimestamp() );
+			$end = $end->format( self::DATE_TIME_FORMAT );
 		}
 		$this->wpdb->replace(
 			$this->table,

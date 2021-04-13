@@ -7,8 +7,8 @@ namespace Palasthotel\WordPress\TrafficIncidents\Model;
  * @property int id
  */
 class TomTomTrafficResponse {
-	public function __construct($id, $incidents) {
-		$this->id = $id;
+	public function __construct( $id, $incidents ) {
+		$this->id        = $id;
 		$this->incidents = $incidents;
 	}
 }

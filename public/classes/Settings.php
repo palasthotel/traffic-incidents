@@ -7,7 +7,7 @@ namespace Palasthotel\WordPress\TrafficIncidents;
 class Settings extends _Component {
 	public function onCreate() {
 		parent::onCreate();
-		add_action('admin_init', function(){
+		add_action( 'admin_init', function () {
 
 			add_settings_section(
 				'traffic-incidents-settings',
@@ -29,11 +29,11 @@ class Settings extends _Component {
 				'general',
 				'traffic-incidents-settings'
 			);
-		});
+		} );
 	}
 
-	public static function getTomTomApiKey(){
-		return get_option(Plugin::OPTION_TOM_TOM_API_KEY, "");
+	public static function getTomTomApiKey() {
+		return get_option( Plugin::OPTION_TOM_TOM_API_KEY, "" );
 	}
 
 	/**

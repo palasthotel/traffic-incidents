@@ -28,7 +28,7 @@ class Repository extends _Component {
 		return $this->database->getAll( $post_id );
 	}
 
-	public function getPosts($queryArgs = []){
+	public function getPosts( $queryArgs = [] ) {
 		return get_posts(
 			array_merge(
 				[
@@ -45,7 +45,7 @@ class Repository extends _Component {
 			return;
 		}
 
-		$trafficModelId = intval(get_post_meta( $post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, true ));
+		$trafficModelId = intval( get_post_meta( $post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, true ) );
 		$args           = TomTomIncidentsRequestArgs::build( $bb );
 		if ( $trafficModelId > 0 ) {
 			$args->trafficModelId( $trafficModelId );
@@ -65,7 +65,7 @@ class Repository extends _Component {
 			                     ->lengthInMeteres( $item->lengthInMeters );
 		}, $response->incidents );
 
-		update_post_meta($post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, $response->id);
+		update_post_meta( $post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, $response->id );
 
 		foreach ( $entities as $entity ) {
 			$this->database->save( $entity );

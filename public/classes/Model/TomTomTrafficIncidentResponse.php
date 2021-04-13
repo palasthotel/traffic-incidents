@@ -45,21 +45,21 @@ class TomTomTrafficIncidentResponse {
 
 	// https://developer.tomtom.com/traffic-api/traffic-api-documentation-traffic-incidents/incident-details#response-data
 	public static function from( $json ) {
-		$incident                   = new TomTomTrafficIncidentResponse();
-		$incident->id               = $json->id;
-		$incident->category         = $json->ic;
-		$incident->delayMagnitude   = $json->ty;
-		$incident->description      = $json->d;
-		$incident->startDate        = $json->sd;
-		if(isset($json->sd)){
+		$incident                 = new TomTomTrafficIncidentResponse();
+		$incident->id             = $json->id;
+		$incident->category       = $json->ic;
+		$incident->delayMagnitude = $json->ty;
+		$incident->description    = $json->d;
+		$incident->startDate      = $json->sd;
+		if ( isset( $json->sd ) ) {
 			try {
 				// date in UTC
 				$incident->startDate = new DateTime( $json->sd );
 			} catch ( Exception $e ) {
 			}
 		}
-		$incident->endDate          = null;
-		if(isset($json->ed)){
+		$incident->endDate = null;
+		if ( isset( $json->ed ) ) {
 			try {
 				// date in UTC
 				$incident->endDate = new DateTime( $json->ed );

@@ -6,6 +6,8 @@ namespace Palasthotel\WordPress\TrafficIncidents\Data;
 
 use Palasthotel\WordPress\TrafficIncidents\_Component;
 use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEntity;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use Palasthotel\WordPress\TrafficIncidents\Plugin;
 
 class PostTypeTraffic extends _Component {
@@ -20,6 +22,22 @@ class PostTypeTraffic extends _Component {
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
+		add_filter( 'the_content', array( $this, 'the_content' ) );
+	}
+
+	public function the_content( $content ) {
+
+		if ( get_post_type() !== $this->getName() ) {
+			return $content;
+		}
+
+		$args = IncidentQueryArgs::build( get_the_ID() );
+		ob_start();
+		do_action( Plugin::ACTION_THE_CONTENT, $args );
+		$content .= ob_get_contents();
+		ob_end_clean();
+
+		return $content;
 	}
 
 	/**
@@ -85,7 +103,7 @@ class PostTypeTraffic extends _Component {
 				);
 				if ( $incident->end ) {
 					printf(
-						__(" -> will approximatly end: %s", Plugin::DOMAIN),
+						__( " -> will approximatly end: %s", Plugin::DOMAIN ),
 						$incident->end->format( "H:i:s" )
 					);
 				}
@@ -93,11 +111,16 @@ class PostTypeTraffic extends _Component {
 			}
 			echo "<div>";
 			printf(
-				__( "From <b>%s</b> to <b>%s</b>", Plugin::DOMAIN),
+				__( "From <b>%s</b> to <b>%s</b>", Plugin::DOMAIN ),
 				$incident->intersectionFrom,
 				$incident->intersectionTo
 			);
 			echo "</div>";
+
+			printf(
+				__( "<i>Last update: %s</i>", Plugin::DOMAIN ),
+				$incident->modified->format( "Y-m-d H:i" )
+			);
 
 			echo "</li>";
 		}

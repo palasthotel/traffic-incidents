@@ -5,8 +5,8 @@ namespace Palasthotel\WordPress\TrafficIncidents\Service;
 
 
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
-use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficIncidentResponse;
+use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 
 /**
  * @property string baseUrl

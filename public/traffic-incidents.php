@@ -28,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @property Repository repo
  * @property Settings settings
  * @property Schedule schedule
+ * @property Templates templates
  */
 class Plugin {
 
@@ -40,6 +41,13 @@ class Plugin {
 
 	const FILTER_CPT_TRAFFIC_SLUG = "traffic_incidents_cpt_traffic_slug";
 	const FILTER_CPT_TRAFFIC_ARGS = "traffic_incidents_cpt_traffic_args";
+
+	const FILTER_ADD_TEMPLATE_PATHS = "traffic_incidents_add_template_paths";
+
+	const ACTION_THE_CONTENT = "traffic_incidents_the_content";
+
+	const THEME_FOLDER = "plugin-parts";
+	const TEMPLATE_INCIDENTS = "traffic-incidents.php";
 
 	const SCHEDULE_FETCH_TRAFFIC_UPDATE = "traffic_incidents_fetch_update";
 
@@ -67,6 +75,7 @@ class Plugin {
 		$this->repo            = new Repository( $this );
 		$this->settings        = new Settings( $this );
 		$this->schedule        = new Schedule( $this );
+		$this->templates       = new Templates( $this );
 
 		// for regeneration of permalinks after plugin activation/deactivation
 		register_activation_hook( __FILE__, array( $this, "activation" ) );
