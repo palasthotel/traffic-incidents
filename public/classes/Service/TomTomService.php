@@ -14,44 +14,44 @@ use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
  */
 class TomTomService {
 
-	public function __construct($apiKey) {
+	public function __construct( $apiKey ) {
 		$this->apiKey = $apiKey;
 	}
 
-	private function getUrl(TomTomIncidentsRequestArgs $args): string {
+	private function getUrl( TomTomIncidentsRequestArgs $args ): string {
 		$boundingBox = $args->boundingBox;
-		$zoom = $args->zoom;
-		$modelId = $args->trafficModelId;
-		$format = $args->format;
-		$version = $args->version;
-		$style = $args->style;
-		$projection = $args->projection;
-		$lang = $args->language;
-		$url = "https://api.tomtom.com/traffic/services/$version/incidentDetails/$style/$boundingBox/$zoom/$modelId/$format";
-		return "$url?projection=$projection&language=$lang&key=$this->apiKey";
+		$modelId     = $args->trafficModelId;
+		$lang        = $args->language;
+		$fields      = urlencode( $args->fields );
+		$url         = "https://api.tomtom.com/traffic/services/5/incidentDetails";
+		$query       = "bbox=$boundingBox&fields=$fields&language=$lang&key=$this->apiKey" . ( $modelId > 0 ? "t=$modelId" : "" );
+
+		return "$url?$query";
 	}
 
-	public function getIncidents(TomTomIncidentsRequestArgs $args){
-		$url = $this->getUrl($args);
-		$response = wp_remote_get($url);
-		if(is_wp_error($response)){
-			error_log($response->get_error_message());
-			return [];
+	public function getIncidents( TomTomIncidentsRequestArgs $args ) {
+		$url      = $this->getUrl( $args );
+		$response = wp_remote_get( $url );
+		if ( is_wp_error( $response ) ) {
+			error_log( $response->get_error_message() );
+
+			return false;
 		}
-		$body = wp_remote_retrieve_body($response);
-		$json =  json_decode($body);
-		if(!isset($json->tm) || !isset($json->tm->poi) || !is_array($json->tm->poi) || !isset($json->tm->{"@id"})){
-			error_log("Unknown response: ".$body);
-			return [];
+		$body = wp_remote_retrieve_body( $response );
+		$json = json_decode( $body );
+		if ( ! isset( $json->incidents ) || ! is_array( $json->incidents ) ) {
+			error_log( "Unknown response: " . $body );
+
+			return false;
 		}
 
-		$id = $json->tm->{"@id"};
+		$id = wp_remote_retrieve_header( $response, "TrafficModelID" );
 
-		$items = array_map(function($json){
-			return TomTomTrafficIncidentResponse::from($json);
-		}, $json->tm->poi);
+		$items = array_map( function ( $incidentJson ) {
+			return TomTomTrafficIncidentResponse::from( $incidentJson->properties );
+		}, $json->incidents );
 
-		return new TomTomTrafficResponse($id, $items);
+		return new TomTomTrafficResponse( $id, $items );
 	}
 
 }

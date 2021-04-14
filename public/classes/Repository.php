@@ -6,7 +6,8 @@ namespace Palasthotel\WordPress\TrafficIncidents;
 
 use Palasthotel\WordPress\TrafficIncidents\Data\IncidentsDatabase;
 use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
-use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEntity;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
 use Palasthotel\WordPress\TrafficIncidents\Service\TomTomService;
 
@@ -25,7 +26,7 @@ class Repository extends _Component {
 	}
 
 	public function getIncidents( $post_id ) {
-		return $this->database->getAll( $post_id );
+		return $this->database->getCurrent( $post_id );
 	}
 
 	public function getPosts( $queryArgs = [] ) {
@@ -53,16 +54,19 @@ class Repository extends _Component {
 		$response = $this->service->getIncidents( $args );
 
 		$entities = array_map( function ( $item ) use ( $response, $post_id ) {
-			return IncidentEntity::build( $item->id, $response->id, $post_id )
-			                     ->description( $item->description )
-			                     ->category( $item->category )
-			                     ->magnitudeOfDelay( $item->delayMagnitude )
-			                     ->start( $item->startDate )
-			                     ->end( $item->endDate )
-			                     ->intersectionFrom( $item->intersectionFrom )
-			                     ->intersectionTo( $item->intersectionTo )
-			                     ->delayInSeconds( $item->delayInSeconds )
-			                     ->lengthInMeteres( $item->lengthInMeters );
+			return IncidentModel::build( $item->id, $response->id, $post_id )
+			                    ->events( array_map(function($event){
+			                    	return new IncidentEventModel($event->code, $event->description);
+			                    }, $item->events) )
+			                    ->category( $item->category )
+			                    ->magnitudeOfDelay( $item->delayMagnitude )
+			                    ->start( $item->startTime )
+			                    ->end( $item->endTime )
+			                    ->intersectionFrom( $item->intersectionFrom )
+			                    ->intersectionTo( $item->intersectionTo )
+			                    ->delayInSeconds( $item->delayInSeconds )
+			                    ->lengthInMeters( $item->lengthInMeters )
+								->roadNumbers($item->roadNumbers);
 		}, $response->incidents );
 
 		update_post_meta( $post_id, Plugin::POST_META_LAST_TRAFFIC_MODEL_ID, $response->id );

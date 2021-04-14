@@ -6,7 +6,7 @@ namespace Palasthotel\WordPress\TrafficIncidents\Data;
 
 use Palasthotel\WordPress\TrafficIncidents\_Component;
 use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
-use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEntity;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use Palasthotel\WordPress\TrafficIncidents\Plugin;
 
@@ -88,12 +88,13 @@ class PostTypeTraffic extends _Component {
 		$incidents = $this->plugin->repo->getIncidents( $post->ID );
 
 		echo "<h2>Incidents</h2>";
+
 		echo "<ul>";
 		foreach ( $incidents as $incident ) {
 
 			echo "<li>";
 			echo "<div>";
-			echo $incident->description;
+			echo implode(",",$incident->events);
 			echo "</div>";
 			if ( $incident->start ) {
 				echo "<div>";

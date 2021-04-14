@@ -9,11 +9,11 @@ use DateTimeZone;
 use Exception;
 
 /**
- * @property  string id
+ * @property string id
  * @property int traffic_model_id
- * @property  int post_id
- * @property  string incident_id
- * @property string description
+ * @property int post_id
+ * @property string incident_id
+ * @property IncidentEventModel[] events
  * @property int category
  * @property int magnitudeOfDelay
  * @property null|DateTime start
@@ -23,21 +23,11 @@ use Exception;
  * @property int delayInSeconds
  * @property int lengthInMeters
  * @property DateTime modified
+ * @property string[] roadNumbers
  */
-class IncidentEntity {
-
-	var $description = "";
-	var $category = 0;
-	var $magnitudeOfDelay = 0;
-	var $start = null;
-	var $end = null;
-	var $intersectionFrom = "";
-	var $intersectionTo = "";
-	var $delayInSeconds = 0;
-	var $lengthInMeters = 0;
+class IncidentModel {
 
 	private $timezone;
-
 
 	private function __construct( $incident_id, $traffic_model_id, $post_id ) {
 		$this->id               = $incident_id;
@@ -47,45 +37,60 @@ class IncidentEntity {
 		$this->timezone = new DateTimeZone( wp_timezone_string() );
 		$this->modified = new DateTime();
 		$this->modified->setTimezone( $this->timezone );
+
+		$this->events           = [];
+		$this->category         = 0;
+		$this->magnitudeOfDelay = 0;
+		$this->start            = null;
+		$this->end              = null;
+		$this->intersectionFrom = "";
+		$this->intersectionTo   = "";
+		$this->delayInSeconds   = 0;
+		$this->lengthInMeters   = 0;
+		$this->roadNumbers      = [];
+
 	}
 
 	public static function build( $incident_id, $traffic_model_id, $post_id ) {
 		return new static( $incident_id, $traffic_model_id, $post_id );
 	}
 
-	public function description( string $value ) {
-		$this->description = $value;
+	/**
+	 * @param IncidentEventModel[] $values
+	 */
+	public function events( array $values ): self {
+		$this->events = $values;
 
 		return $this;
 	}
 
-	public function category( $value ) {
+	public function category( int $value ): self {
 		$this->category = $value;
 
 		return $this;
 	}
 
-	public function magnitudeOfDelay( $value ) {
+	public function magnitudeOfDelay( int $value ): self {
 		$this->magnitudeOfDelay = $value;
 
 		return $this;
 	}
 
-	public function start( $datetimeOrUTCString ) {
+	public function start( $datetimeOrUTCString ): self {
 
 		$this->start = $this->getDateTimeFrom( $datetimeOrUTCString );
 
 		return $this;
 	}
 
-	public function end( $datetimeOrUTCString ) {
+	public function end( $datetimeOrUTCString ): self {
 
 		$this->end = $this->getDateTimeFrom( $datetimeOrUTCString );
 
 		return $this;
 	}
 
-	public function modified( $datetimeOrUTCString ) {
+	public function modified( $datetimeOrUTCString ): self {
 		$this->modified = $this->getDateTimeFrom( $datetimeOrUTCString );
 
 		return $this;
@@ -111,26 +116,32 @@ class IncidentEntity {
 		return null;
 	}
 
-	public function intersectionFrom( $value ) {
+	public function intersectionFrom( string $value ): self {
 		$this->intersectionFrom = $value;
 
 		return $this;
 	}
 
-	public function intersectionTo( $value ) {
+	public function intersectionTo( string $value ): self {
 		$this->intersectionTo = $value;
 
 		return $this;
 	}
 
-	public function delayInSeconds( $value ) {
+	public function delayInSeconds( int $value ): self {
 		$this->delayInSeconds = $value;
 
 		return $this;
 	}
 
-	public function lengthInMeteres( $value ) {
+	public function lengthInMeters( int $value ): self {
 		$this->lengthInMeters = $value;
+
+		return $this;
+	}
+
+	public function roadNumbers( array $values ): self {
+		$this->roadNumbers = $values;
 
 		return $this;
 	}

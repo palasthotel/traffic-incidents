@@ -4,12 +4,12 @@
 namespace Palasthotel\WordPress\TrafficIncidents\Data;
 
 
-use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEntity;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use Palasthotel\WordPress\TrafficIncidents\Plugin;
 
 /**
- * @property IncidentEntity[] incidents
+ * @property IncidentModel[] incidents
  */
 class IncidentQuery {
 
@@ -24,7 +24,7 @@ class IncidentQuery {
 	}
 
 	/**
-	 * @return IncidentEntity|null
+	 * @return IncidentModel|null
 	 */
 	public function nextIncident() {
 		if ( isset( $this->incidents[ $this->pointer ] ) ) {

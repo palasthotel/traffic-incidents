@@ -16,6 +16,8 @@ if ( $query->haveIncidents() ) {
 
         <li>
             <div><?= $incident->description; ?></div>
+            <div>Kategorie: <?= $incident->category; ?></div>
+            <div>Schwere der Verzögerung: <?= $incident->magnitudeOfDelay; ?></div>
 			<?php
 			if ( $incident->start ) {
 				echo "<div>";

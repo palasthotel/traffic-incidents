@@ -3,7 +3,7 @@
 
 namespace Palasthotel\WordPress\TrafficIncidents;
 
-use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEntity;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 
 class Templates extends _Component {
