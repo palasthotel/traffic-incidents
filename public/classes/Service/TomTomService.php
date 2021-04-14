@@ -19,12 +19,11 @@ class TomTomService {
 	}
 
 	private function getUrl( TomTomIncidentsRequestArgs $args ): string {
-		$boundingBox = $args->boundingBox;
-		$modelId     = $args->trafficModelId;
+		$boundingBox = urlencode( $args->boundingBox );
 		$lang        = $args->language;
 		$fields      = urlencode( $args->fields );
 		$url         = "https://api.tomtom.com/traffic/services/5/incidentDetails";
-		$query       = "bbox=$boundingBox&fields=$fields&language=$lang&key=$this->apiKey" . ( $modelId > 0 ? "t=$modelId" : "" );
+		$query       = "bbox=$boundingBox&fields=$fields&language=$lang&key=$this->apiKey";
 
 		return "$url?$query";
 	}

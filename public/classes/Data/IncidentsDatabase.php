@@ -108,7 +108,7 @@ class IncidentsDatabase {
 
 		$results = $this->wpdb->get_results(
 			$this->wpdb->prepare(
-				"SELECT * FROM $this->table as i 
+				"SELECT *	FROM $this->table as i 
     					LEFT JOIN $this->tableIncidentEvents as ie on (i.id = ie.incident_id)
 						LEFT JOIN $this->tableEvents as e on (e.id = ie.event_id)
     					WHERE post_id = %d AND i.ts_modified = (SELECT ts_modified FROM $this->table ORDER BY ts_modified DESC LIMIT 1)
@@ -140,10 +140,11 @@ class IncidentsDatabase {
 				$incident = $incidents[ $item->incident_id ];
 			}
 
-			$events   = $incident->events;
-			$events[] = new IncidentEventModel( $item->code, $item->description );
-			$incident->events( $events );
-
+			if($item->code != null && is_string($item->description) ){
+				$events   = $incident->events;
+				$events[] = new IncidentEventModel( intval($item->code), $item->description );
+				$incident->events( $events );
+			}
 		}
 
 		return array_values($incidents);

@@ -9,6 +9,7 @@ use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
+use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 use Palasthotel\WordPress\TrafficIncidents\Service\TomTomService;
 
 /**
@@ -52,6 +53,8 @@ class Repository extends _Component {
 			$args->trafficModelId( $trafficModelId );
 		}
 		$response = $this->service->getIncidents( $args );
+
+		if(!($response instanceof TomTomTrafficResponse)) return;
 
 		$entities = array_map( function ( $item ) use ( $response, $post_id ) {
 			return IncidentModel::build( $item->id, $response->id, $post_id )

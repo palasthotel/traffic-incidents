@@ -94,7 +94,7 @@ class PostTypeTraffic extends _Component {
 
 			echo "<li>";
 			echo "<div>";
-			echo implode(",",$incident->events);
+			echo implode(",", $incident->events);
 			echo "</div>";
 			if ( $incident->start ) {
 				echo "<div>";
@@ -129,6 +129,9 @@ class PostTypeTraffic extends _Component {
 	}
 
 	public function save( $post_id ) {
+
+		if(!isset($_POST[ Plugin::POST_META_BOUNDING_BOX ])) return;
+
 		$this->setBoundingBox(
 			$post_id,
 			BoundingBox::parse(
