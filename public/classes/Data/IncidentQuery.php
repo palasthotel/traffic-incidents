@@ -16,11 +16,15 @@ class IncidentQuery {
 	private $pointer = 0;
 
 	public function __construct( IncidentQueryArgs $args ) {
-		$this->incidents = Plugin::instance()->repo->getIncidents( $args->post_id );
+		$this->incidents = Plugin::instance()->repo->queryIncidents( $args );
 	}
 
 	public function haveIncidents(): bool {
 		return $this->pointer < count( $this->incidents );
+	}
+
+	public function count(): int {
+		return count($this->incidents);
 	}
 
 	/**

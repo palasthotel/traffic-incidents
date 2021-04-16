@@ -6,6 +6,7 @@ namespace Palasthotel\WordPress\TrafficIncidents\Data;
 use DateTime;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use wpdb;
 
 /**
@@ -104,16 +105,43 @@ class IncidentsDatabase {
 
 	}
 
-	public function getCurrent( $post_id ) {
+	public function query( IncidentQueryArgs $args ) {
+
+		$conditions  = [];
+		if(isset($args->magnitudeOfDelay)){
+			$conditions[] = $this->wpdb->prepare(
+				"magnitude_of_delay = %d",
+				$args->magnitudeOfDelay
+			);
+		}
+		if(isset($args->category)){
+			$conditions[] = $this->wpdb->prepare(
+				"category = %d",
+				$args->category
+			);
+		}
+		if(isset($args->eventCode)){
+			$conditions[] = $this->wpdb->prepare(
+				"i.id IN (SELECT incident_id FROM $this->tableIncidentEvents WHERE event_id IN (SELECT id FROM $this->tableEvents WHERE code = %d))",
+				$args->eventCode
+			);
+		}
+
+		$where = "";
+		if(count($conditions) > 0){
+			$where = " AND ".implode(" AND ", $conditions);
+		}
 
 		$results = $this->wpdb->get_results(
 			$this->wpdb->prepare(
 				"SELECT *	FROM $this->table as i 
     					LEFT JOIN $this->tableIncidentEvents as ie on (i.id = ie.incident_id)
 						LEFT JOIN $this->tableEvents as e on (e.id = ie.event_id)
-    					WHERE post_id = %d AND i.ts_modified = (SELECT ts_modified FROM $this->table ORDER BY ts_modified DESC LIMIT 1)
+    					WHERE 
+    					      post_id = %d AND i.ts_modified = (SELECT ts_modified FROM $this->table ORDER BY ts_modified DESC LIMIT 1)
+							  $where
 						ORDER BY ie.incident_id DESC, e.code ASC 
-    					", $post_id
+    					", $args->post_id
 			)
 		);
 

@@ -6,6 +6,7 @@ namespace Palasthotel\WordPress\TrafficIncidents\Data;
 
 use Palasthotel\WordPress\TrafficIncidents\_Component;
 use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentMagnitude;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use Palasthotel\WordPress\TrafficIncidents\Plugin;
@@ -85,7 +86,9 @@ class PostTypeTraffic extends _Component {
 		echo "<input type='text' name='$name' value='$bb' style='width: 100%' />";
 		echo "</label>";
 
-		$incidents = $this->plugin->repo->getIncidents( $post->ID );
+		//$incidents = $this->plugin->repo->getIncidents( $post->ID );
+		$incidents = $this->plugin->repo->queryIncidents( IncidentQueryArgs::build( $post->ID ) );
+
 
 		echo "<h2>Incidents</h2>";
 
@@ -94,7 +97,7 @@ class PostTypeTraffic extends _Component {
 
 			echo "<li>";
 			echo "<div>";
-			echo implode(",", $incident->events);
+			echo implode( ",", $incident->events );
 			echo "</div>";
 			if ( $incident->start ) {
 				echo "<div>";
@@ -130,7 +133,9 @@ class PostTypeTraffic extends _Component {
 
 	public function save( $post_id ) {
 
-		if(!isset($_POST[ Plugin::POST_META_BOUNDING_BOX ])) return;
+		if ( ! isset( $_POST[ Plugin::POST_META_BOUNDING_BOX ] ) ) {
+			return;
+		}
 
 		$this->setBoundingBox(
 			$post_id,

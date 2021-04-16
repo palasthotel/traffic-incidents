@@ -8,6 +8,7 @@ use Palasthotel\WordPress\TrafficIncidents\Data\IncidentsDatabase;
 use Palasthotel\WordPress\TrafficIncidents\Model\BoundingBox;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 use Palasthotel\WordPress\TrafficIncidents\Service\TomTomService;
@@ -27,7 +28,11 @@ class Repository extends _Component {
 	}
 
 	public function getIncidents( $post_id ) {
-		return $this->database->getCurrent( $post_id );
+		return $this->database->query( IncidentQueryArgs::build($post_id) );
+	}
+
+	public function queryIncidents( IncidentQueryArgs $args ) {
+		return $this->database->query( $args );
 	}
 
 	public function getPosts( $queryArgs = [] ) {

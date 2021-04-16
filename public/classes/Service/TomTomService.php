@@ -29,6 +29,13 @@ class TomTomService {
 	}
 
 	public function getIncidents( TomTomIncidentsRequestArgs $args ) {
+
+		if(empty($this->apiKey)){
+			error_log("TomTom API-Key missing.");
+
+			return false;
+		}
+
 		$url      = $this->getUrl( $args );
 		$response = wp_remote_get( $url );
 		if ( is_wp_error( $response ) ) {
