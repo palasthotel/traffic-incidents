@@ -29,6 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @property Settings settings
  * @property Schedule schedule
  * @property Templates templates
+ * @property REST rest
  */
 class Plugin {
 
@@ -76,6 +77,7 @@ class Plugin {
 		$this->settings        = new Settings( $this );
 		$this->schedule        = new Schedule( $this );
 		$this->templates       = new Templates( $this );
+		$this->rest            = new REST( $this );
 
 		// for regeneration of permalinks after plugin activation/deactivation
 		register_activation_hook( __FILE__, array( $this, "activation" ) );
