@@ -1,0 +1,30 @@
+{
+  "name": "traffic-incidents",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "wp-scripts start src/api.js --output-path=public/dist",
+    "build": "wp-scripts build src/api.js --output-path=public/dist",
+    "check-engines": "wp-scripts check-engines",
+    "lint:js:src": "wp-scripts lint-js ./src",
+    "packages-update": "wp-scripts packages-update"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^3.23.1",
+    "@wordpress/element": "^2.20.2",
+    "@wordpress/scripts": "^14.1.1",
+    "swr": "^0.5.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palasthotel/traffic-incidents.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/palasthotel/traffic-incidents/issues"
+  },
+  "homepage": "https://github.com/palasthotel/traffic-incidents#readme"
+}

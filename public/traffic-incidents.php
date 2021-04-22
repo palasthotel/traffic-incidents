@@ -52,6 +52,8 @@ class Plugin {
 
 	const SCHEDULE_FETCH_TRAFFIC_UPDATE = "traffic_incidents_fetch_update";
 
+	const HANDLE_API_JS = "traffic_incidents_api_js";
+
 	private function __construct() {
 
 		/**
