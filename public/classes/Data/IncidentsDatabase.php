@@ -70,10 +70,8 @@ class IncidentsDatabase {
 					[ $event->code, $event->description ]
 				)
 			);
-			if ( $relationId ) {
-				$eventRelations[] = "( $relationId, )";
-			} else {
-				$eventRelations[] = $this->wpdb->insert(
+			if ( !is_numeric($relationId) || intval($relationId) <= 0 ) {
+				$relationId = $this->wpdb->insert(
 					$this->tableEvents,
 					[
 						"code"        => $event->code,
