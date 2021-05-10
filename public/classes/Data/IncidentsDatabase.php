@@ -155,6 +155,7 @@ class IncidentsDatabase {
 				                         ->magnitudeOfDelay( $item->magnitude_of_delay )
 				                         ->start( $item->ts_start )
 				                         ->end( $item->ts_end )
+										 ->modified($item->ts_modified)
 				                         ->intersectionFrom( $item->intersection_from )
 				                         ->intersectionTo( $item->intersection_to )
 				                         ->delayInSeconds( $item->delay_in_seconds )
