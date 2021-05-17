@@ -26,7 +26,10 @@ class IncidentsDatabase {
 		$this->table               = $wpdb->prefix . "tom_tom_traffic_incidents";
 		$this->tableEvents         = $wpdb->prefix . "tom_tom_traffic_events";
 		$this->tableIncidentEvents = $wpdb->prefix . "tom_tom_traffic_incident_events";
-		$this->now                 = ( new DateTime() )->format( self::DATE_TIME_FORMAT );
+		$tz                        = new \DateTimeZone( wp_timezone_string() );
+		$now                       = new DateTime();
+		$now->setTimezone( $tz );
+		$this->now = $now->format( self::DATE_TIME_FORMAT );
 	}
 
 	public function save( IncidentModel $incident ) {
@@ -70,7 +73,7 @@ class IncidentsDatabase {
 					[ $event->code, $event->description ]
 				)
 			);
-			if ( !is_numeric($relationId) || intval($relationId) <= 0 ) {
+			if ( ! is_numeric( $relationId ) || intval( $relationId ) <= 0 ) {
 				$relationId = $this->wpdb->insert(
 					$this->tableEvents,
 					[
@@ -105,20 +108,20 @@ class IncidentsDatabase {
 
 	public function query( IncidentQueryArgs $args ) {
 
-		$conditions  = [];
-		if(isset($args->magnitudeOfDelay)){
+		$conditions = [];
+		if ( isset( $args->magnitudeOfDelay ) ) {
 			$conditions[] = $this->wpdb->prepare(
 				"magnitude_of_delay = %d",
 				$args->magnitudeOfDelay
 			);
 		}
-		if(isset($args->category)){
+		if ( isset( $args->category ) ) {
 			$conditions[] = $this->wpdb->prepare(
 				"category = %d",
 				$args->category
 			);
 		}
-		if(isset($args->eventCode)){
+		if ( isset( $args->eventCode ) ) {
 			$conditions[] = $this->wpdb->prepare(
 				"i.id IN (SELECT incident_id FROM $this->tableIncidentEvents WHERE event_id IN (SELECT id FROM $this->tableEvents WHERE code = %d))",
 				$args->eventCode
@@ -126,8 +129,8 @@ class IncidentsDatabase {
 		}
 
 		$where = "";
-		if(count($conditions) > 0){
-			$where = " AND ".implode(" AND ", $conditions);
+		if ( count( $conditions ) > 0 ) {
+			$where = " AND " . implode( " AND ", $conditions );
 		}
 
 		$results = $this->wpdb->get_results(
@@ -155,7 +158,7 @@ class IncidentsDatabase {
 				                         ->magnitudeOfDelay( $item->magnitude_of_delay )
 				                         ->start( $item->ts_start )
 				                         ->end( $item->ts_end )
-										 ->modified($item->ts_modified)
+				                         ->modified( $item->ts_modified )
 				                         ->intersectionFrom( $item->intersection_from )
 				                         ->intersectionTo( $item->intersection_to )
 				                         ->delayInSeconds( $item->delay_in_seconds )
@@ -167,14 +170,14 @@ class IncidentsDatabase {
 				$incident = $incidents[ $item->incident_id ];
 			}
 
-			if($item->code != null && is_string($item->description) ){
+			if ( $item->code != null && is_string( $item->description ) ) {
 				$events   = $incident->events;
-				$events[] = new IncidentEventModel( intval($item->code), $item->description );
+				$events[] = new IncidentEventModel( intval( $item->code ), $item->description );
 				$incident->events( $events );
 			}
 		}
 
-		return array_values($incidents);
+		return array_values( $incidents );
 	}
 
 	/**
