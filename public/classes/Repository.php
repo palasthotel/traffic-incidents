@@ -27,12 +27,15 @@ class Repository extends _Component {
 		$this->database = new IncidentsDatabase();
 	}
 
-	public function getIncidents( $post_id ) {
-		return $this->database->query( IncidentQueryArgs::build($post_id) );
-	}
-
+	/**
+	 * @param IncidentQueryArgs $args
+	 *
+	 * @return IncidentModel[]
+	 */
 	public function queryIncidents( IncidentQueryArgs $args ) {
-		return $this->database->query( $args );
+		do_action( Plugin::ACTION_QUERY_INCIDENTS_ARGS, $args);
+		$result = $this->database->query( $args );
+		return apply_filters(Plugin::FILTER_QUERY_INCIDENTS_RESULT, $result, $args);
 	}
 
 	public function getPosts( $queryArgs = [] ) {

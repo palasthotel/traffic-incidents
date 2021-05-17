@@ -45,6 +45,9 @@ class Plugin {
 
 	const FILTER_ADD_TEMPLATE_PATHS = "traffic_incidents_add_template_paths";
 
+	const FILTER_QUERY_INCIDENTS_RESULT = "traffic_incidents_query_result";
+
+	const ACTION_QUERY_INCIDENTS_ARGS = "traffic_incidents_query_args";
 	const ACTION_THE_CONTENT = "traffic_incidents_the_content";
 
 	const THEME_FOLDER = "plugin-parts";

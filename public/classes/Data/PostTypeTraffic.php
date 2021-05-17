@@ -86,7 +86,6 @@ class PostTypeTraffic extends _Component {
 		echo "<input type='text' name='$name' value='$bb' style='width: 100%' />";
 		echo "</label>";
 
-		//$incidents = $this->plugin->repo->getIncidents( $post->ID );
 		$incidents = $this->plugin->repo->queryIncidents( IncidentQueryArgs::build( $post->ID ) );
 
 
