@@ -12,7 +12,6 @@ use wpdb;
 /**
  * @property wpdb wpdb
  * @property string table
- * @property string now
  * @property string tableEvents
  * @property string tableIncidentEvents
  */
@@ -26,10 +25,6 @@ class IncidentsDatabase {
 		$this->table               = $wpdb->prefix . "tom_tom_traffic_incidents";
 		$this->tableEvents         = $wpdb->prefix . "tom_tom_traffic_events";
 		$this->tableIncidentEvents = $wpdb->prefix . "tom_tom_traffic_incident_events";
-		$tz                        = new \DateTimeZone( wp_timezone_string() );
-		$now                       = new DateTime();
-		$now->setTimezone( $tz );
-		$this->now = $now->format( self::DATE_TIME_FORMAT );
 	}
 
 	public function save( IncidentModel $incident ) {
@@ -53,7 +48,6 @@ class IncidentsDatabase {
 				"post_id"            => $incident->post_id,
 				"category"           => $incident->category,
 				"magnitude_of_delay" => $incident->magnitudeOfDelay,
-				"ts_modified"        => $this->now,
 				"ts_start"           => $start,
 				"ts_end"             => $end,
 				"intersection_from"  => $incident->intersectionFrom,
