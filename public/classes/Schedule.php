@@ -4,6 +4,8 @@
 namespace Palasthotel\WordPress\TrafficIncidents;
 
 
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
+
 class Schedule extends _Component {
 
 	public function onCreate() {
@@ -20,9 +22,22 @@ class Schedule extends _Component {
 
 	public function run() {
 		$posts = $this->plugin->repo->getPosts();
+
 		foreach ( $posts as $post ) {
+			$this->plugin->log->add("Fetch for post $post->ID");
 			$this->plugin->repo->fetchIncidents( $post->ID );
+
+			$incidents = $this->plugin->repo->queryIncidents(IncidentQueryArgs::build($post->ID));
+			foreach ($incidents as $incident){
+				$location = $incident->getStartLocation();
+				if(null === $location || $location->locality !== null){
+					continue;
+				}
+				$result = $this->plugin->repo->fetchLocation($location);
+
+			}
 		}
+
 	}
 
 }

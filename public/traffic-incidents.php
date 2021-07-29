@@ -19,10 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
+require_once dirname( __FILE__ ) . "/vendor/autoload.php";
+
 
 /**
- * @property string path
- * @property string url
  * @property Assets assets
  * @property PostTypeTraffic postTypeTraffic
  * @property Repository repo
@@ -30,8 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @property Schedule schedule
  * @property Templates templates
  * @property REST rest
+ * @property Log log
  */
-class Plugin {
+class Plugin extends Components\Plugin {
 
 	const DOMAIN = "traffic-incidents";
 
@@ -47,6 +48,10 @@ class Plugin {
 
 	const FILTER_QUERY_INCIDENTS_RESULT = "traffic_incidents_query_result";
 
+	const FILTER_PREPROCESS_LOCATION_LAT = "traffic_incidents_preprocess_location_lat";
+	const FILTER_PREPROCESS_LOCATION_LNG = "traffic_incidents_preprocess_location_lng";
+
+	const ACTION_AFTER_INCIDENT_SAVED = "traffic_incidents_after_incident_saved";
 	const ACTION_QUERY_INCIDENTS_ARGS = "traffic_incidents_query_args";
 	const ACTION_THE_CONTENT = "traffic_incidents_the_content";
 
@@ -57,24 +62,12 @@ class Plugin {
 
 	const HANDLE_API_JS = "traffic_incidents_api_js";
 
-	private function __construct() {
+	function onCreate() {
 
-		/**
-		 * load translations
-		 */
-		load_plugin_textdomain(
+		$this->loadTextdomain(
 			Plugin::DOMAIN,
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+			"languages"
 		);
-
-		/**
-		 * Base paths
-		 */
-		$this->path = plugin_dir_path( __FILE__ );
-		$this->url  = plugin_dir_url( __FILE__ );
-
-		require_once dirname( __FILE__ ) . "/vendor/autoload.php";
 
 		$this->assets          = new Assets( $this );
 		$this->postTypeTraffic = new PostTypeTraffic( $this );
@@ -83,10 +76,9 @@ class Plugin {
 		$this->schedule        = new Schedule( $this );
 		$this->templates       = new Templates( $this );
 		$this->rest            = new REST( $this );
+		$this->log             = new Log( $this );
 
-		// for regeneration of permalinks after plugin activation/deactivation
-		register_activation_hook( __FILE__, array( $this, "activation" ) );
-		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
+		new Updater($this);
 
 		if ( WP_DEBUG ) {
 			$this->repo->database->createTable();
@@ -97,26 +89,13 @@ class Plugin {
 	/**
 	 * on plugin activation
 	 */
-	function activation() {
+	function onSiteActivation() {
 		$this->repo->database->createTable();
 		$this->schedule->schedule();
 	}
 
-	/**
-	 * on plugin deactivation
-	 */
-	function deactivation() {
-	}
-
-	private static $instance;
-
-	public static function instance(): Plugin {
-		if ( null == static::$instance ) {
-			static::$instance = new static();
-		}
-
-		return static::$instance;
-	}
 }
 
 Plugin::instance();
+
+require_once dirname(__FILE__)."/public-functions.php";

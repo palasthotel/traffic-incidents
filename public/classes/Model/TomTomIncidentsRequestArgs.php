@@ -16,7 +16,7 @@ class TomTomIncidentsRequestArgs {
 		$this->boundingBox    = $boundingBox;
 		$this->trafficModelId = - 1;
 		$this->language       = "de-DE";
-		$this->fields = "{incidents{type,properties{id,iconCategory,magnitudeOfDelay,events{description,code},startTime,endTime,from,to,length,delay,roadNumbers}}}";
+		$this->fields = "{incidents{type,geometry{type,coordinates},properties{id,iconCategory,magnitudeOfDelay,events{description,code},startTime,endTime,from,to,length,delay,roadNumbers}}}";
 	}
 
 	public static function build( BoundingBox $bounding_box ): TomTomIncidentsRequestArgs {

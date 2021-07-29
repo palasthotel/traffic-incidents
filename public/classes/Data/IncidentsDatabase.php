@@ -5,8 +5,11 @@ namespace Palasthotel\WordPress\TrafficIncidents\Data;
 
 use DateTime;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
+use Palasthotel\WordPress\TrafficIncidents\Model\IncidentLocation;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
+use Palasthotel\WordPress\TrafficIncidents\Plugin;
+use Palasthotel\WordPress\TrafficIncidents\Utils\Mapper;
 use wpdb;
 
 /**
@@ -14,6 +17,8 @@ use wpdb;
  * @property string table
  * @property string tableEvents
  * @property string tableIncidentEvents
+ * @property string tableLocations
+ * @property string tableIncidentLocations
  */
 class IncidentsDatabase {
 
@@ -21,10 +26,12 @@ class IncidentsDatabase {
 
 	public function __construct() {
 		global $wpdb;
-		$this->wpdb                = $wpdb;
-		$this->table               = $wpdb->prefix . "tom_tom_traffic_incidents";
-		$this->tableEvents         = $wpdb->prefix . "tom_tom_traffic_events";
-		$this->tableIncidentEvents = $wpdb->prefix . "tom_tom_traffic_incident_events";
+		$this->wpdb                   = $wpdb;
+		$this->table                  = $wpdb->prefix . "tom_tom_traffic_incidents";
+		$this->tableEvents            = $wpdb->prefix . "tom_tom_traffic_events";
+		$this->tableIncidentEvents    = $wpdb->prefix . "tom_tom_traffic_incident_events";
+		$this->tableLocations         = $wpdb->prefix . "tom_tom_locations";
+		$this->tableIncidentLocations = $wpdb->prefix . "tom_tom_incident_locations";
 	}
 
 	public function save( IncidentModel $incident ) {
@@ -82,6 +89,16 @@ class IncidentsDatabase {
 			$relationsValue[] = intval( $relationId );
 		}
 
+		foreach ($incident->locations as $location){
+			$this->wpdb->replace(
+				$this->tableIncidentLocations,
+				[
+					"location_id" => $location->id,
+					"incident_id" => $incident->id,
+				]
+			);
+		}
+
 		// cleanup old events
 		$this->wpdb->query(
 			$this->wpdb->prepare(
@@ -98,6 +115,48 @@ class IncidentsDatabase {
 			)
 		);
 
+	}
+
+	/**
+	 * @param IncidentLocation $location
+	 *
+	 * @return bool|int
+	 */
+	public function saveLocation( IncidentLocation $location ){
+		$success = $this->wpdb->insert(
+			$this->tableLocations,
+			Mapper::locationToRow($location),
+		);
+		return $success ? $this->wpdb->insert_id : false;
+	}
+
+	public function updateLocation( IncidentLocation $location ){
+		$row = Mapper::locationToRow($location);
+		unset($row["id"]);
+		unset($row["lat"]);
+		unset($row["lng"]);
+		return $this->wpdb->update(
+			$this->tableLocations,
+			$row,
+			[
+				"id" => $location->id,
+			]
+		);
+	}
+
+	/**
+	 * @param string $lat
+	 * @param string $lng
+	 *
+	 * @return IncidentLocation|null
+	 */
+	public function getLocation(string $lat, string $lng){
+		$row = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT * FROM $this->tableLocations WHERE lat = %s AND lng = %s", $lat, $lng
+			)
+		);
+		return $row !== null ? Mapper::rowToLocation($row) : null;
 	}
 
 	public function query( IncidentQueryArgs $args ) {
@@ -146,7 +205,6 @@ class IncidentsDatabase {
 		$incidents = [];
 		foreach ( $results as $item ) {
 			if ( ! isset( $incidents[ $item->incident_id ] ) ) {
-
 				$incident = IncidentModel::build( $item->incident_id, $item->traffic_model_id, $item->post_id )
 				                         ->category( $item->category )
 				                         ->magnitudeOfDelay( $item->magnitude_of_delay )
@@ -171,6 +229,28 @@ class IncidentsDatabase {
 			}
 		}
 
+		$incidentIds = array_keys($incidents);
+		$ids = implode(', ', array_map(function($id){
+			return "'$id'";
+		}, $incidentIds));
+
+		$results = $this->wpdb->get_results(
+			"SELECT * FROM $this->tableLocations as loc
+				LEFT JOIN $this->tableIncidentLocations as iloc ON (loc.id = iloc.location_id)
+				WHERE iloc.incident_id IN ( {$ids} ) ORDER BY iloc.id ASC
+				"
+		);
+
+		foreach ($results as $row){
+			if(!isset($incidents[$row->incident_id])) {
+				continue;
+			}
+			if($incidents[$row->incident_id] instanceof IncidentModel){
+				$row->id = $row->location_id;
+				$incidents[$row->incident_id]->locations[] = Mapper::rowToLocation($row);
+			}
+		}
+
 		return array_values( $incidents );
 	}
 
@@ -182,13 +262,28 @@ class IncidentsDatabase {
 
 		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->tableEvents
 			(
-			id int(10) unsigned auto_increment NOT NULL,
+			id bigint(20) unsigned auto_increment NOT NULL,
 			code int(4) NOT NULL,
 			description varchar (190) NOT NULL,
 			primary key (id),
     		unique key (code, description),
     		key (code),
     		key (description)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
+
+		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->tableLocations
+			(
+			id bigint(20) unsigned auto_increment NOT NULL,
+			lat varchar (25) NOT NULL,
+			lng varchar (25) NOT NULL,
+    		address varchar (190) DEFAULT NULL,
+    		postcode varchar (190) DEFAULT NULL,
+    		locality varchar (190) DEFAULT NULL,
+    		place varchar(190) DEFAULT NULL,
+    		region varchar(190) DEFAULT NULL,
+    		country varchar (190) DEFAULT NULL,
+    		primary key (id),
+			unique key (lat, lng)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 
 		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->table
@@ -222,12 +317,24 @@ class IncidentsDatabase {
 
 		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->tableIncidentEvents
 			(
-			event_id int(10) unsigned NOT NULL,
+			event_id bigint(20) unsigned NOT NULL,
     		incident_id varchar(190) NOT NULL,
 			primary key (event_id, incident_id),
     		key (event_id),
     		key (incident_id),
     		FOREIGN KEY (event_id) REFERENCES $this->tableEvents (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    		FOREIGN KEY (incident_id) REFERENCES $this->table (id) ON UPDATE CASCADE ON DELETE CASCADE 
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
+
+		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->tableIncidentLocations
+			(
+		    id bigint(20) unsigned auto_increment NOT NULL,
+		    location_id  int(10) unsigned NOT NULL,
+    		incident_id varchar(190) NOT NULL,
+			primary key (id),
+    		key (location_id),
+    		key (incident_id),
+    		FOREIGN KEY (location_id) REFERENCES $this->tableLocations (id) ON UPDATE CASCADE ON DELETE CASCADE,
     		FOREIGN KEY (incident_id) REFERENCES $this->table (id) ON UPDATE CASCADE ON DELETE CASCADE 
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );
 

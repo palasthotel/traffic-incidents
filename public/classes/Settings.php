@@ -43,4 +43,8 @@ class Settings extends _Component {
 		$val = Settings::getTomTomApiKey();
 		echo "<input type='text' value='$val' name='" . Plugin::OPTION_TOM_TOM_API_KEY . "' />";
 	}
+
+	public static function getMapBoxApiKey(){
+		return MAPBOX_API_TOKEN ?? "";
+	}
 }

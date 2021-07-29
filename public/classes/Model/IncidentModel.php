@@ -24,6 +24,7 @@ use Exception;
  * @property int lengthInMeters
  * @property DateTime modified
  * @property string[] roadNumbers
+ * @property IncidentLocation[] $locations
  */
 class IncidentModel {
 
@@ -48,6 +49,8 @@ class IncidentModel {
 		$this->delayInSeconds   = 0;
 		$this->lengthInMeters   = 0;
 		$this->roadNumbers      = [];
+
+		$this->locations = [];
 
 	}
 
@@ -146,5 +149,33 @@ class IncidentModel {
 		return $this;
 	}
 
+	/**
+	 * @param IncidentLocation[] $values
+	 *
+	 * @return $this
+	 */
+	public function locations($values): self {
+		$this->locations = $values;
+
+		return $this;
+	}
+
+	/**
+	 * @return null|IncidentLocation
+	 */
+	public function getStartLocation() {
+		return !empty($this->locations) ? $this->locations[0] : null;
+	}
+
+	/**
+	 * @return IncidentLocation[]
+	 */
+	public function getGoodLocations(){
+		$found = array_filter($this->locations, function($location){
+			return !$location->isEmpty();
+		});
+		return array_values($found);
+
+	}
 
 }

@@ -54,7 +54,7 @@ class TomTomService {
 		$id = wp_remote_retrieve_header( $response, "TrafficModelID" );
 
 		$items = array_map( function ( $incidentJson ) {
-			return TomTomTrafficIncidentResponse::from( $incidentJson->properties );
+			return TomTomTrafficIncidentResponse::from( $incidentJson );
 		}, $json->incidents );
 
 		return new TomTomTrafficResponse( $id, $items );

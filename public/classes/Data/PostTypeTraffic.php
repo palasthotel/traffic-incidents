@@ -94,7 +94,7 @@ class PostTypeTraffic extends _Component {
 		echo "<ul>";
 		foreach ( $incidents as $incident ) {
 
-			echo "<li>";
+			echo "<li style='margin-bottom: 20px;'>";
 			echo "<div>";
 			echo implode( ",", $incident->events );
 			echo "</div>";
@@ -119,6 +119,14 @@ class PostTypeTraffic extends _Component {
 				$incident->intersectionTo
 			);
 			echo "</div>";
+
+			if(!empty($incident->getGoodLocations())){
+				echo "<ul>";
+				foreach ($incident->getGoodLocations() as $location){
+					echo "<li>🛣 $location->address </br>Lat: $location->lat, Lng: $location->lng</li>";
+				}
+				echo "</ul>";
+			}
 
 			printf(
 				__( "<i>Last update: %s</i>", Plugin::DOMAIN ),
