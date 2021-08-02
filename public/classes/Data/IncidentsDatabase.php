@@ -192,7 +192,7 @@ class IncidentsDatabase {
     					LEFT JOIN $this->tableIncidentEvents as ie on (i.id = ie.incident_id)
 						LEFT JOIN $this->tableEvents as e on (e.id = ie.event_id)
     					WHERE 
-    					      post_id = %d AND i.ts_modified = (SELECT ts_modified FROM $this->table ORDER BY ts_modified DESC LIMIT 1)
+    					      post_id = %d AND i.ts_modified > (SELECT DATE_SUB(max(ts_modified), INTERVAL 10 SECOND) FROM $this->table)
 							  $where
 						ORDER BY ie.incident_id DESC, e.code ASC 
     					", $args->post_id
@@ -329,11 +329,12 @@ class IncidentsDatabase {
 		\dbDelta( "CREATE TABLE IF NOT EXISTS $this->tableIncidentLocations
 			(
 		    id bigint(20) unsigned auto_increment NOT NULL,
-		    location_id  int(10) unsigned NOT NULL,
+		    location_id  bigint(20) unsigned NOT NULL,
     		incident_id varchar(190) NOT NULL,
 			primary key (id),
     		key (location_id),
     		key (incident_id),
+    		unique key (location_id, incident_id),    
     		FOREIGN KEY (location_id) REFERENCES $this->tableLocations (id) ON UPDATE CASCADE ON DELETE CASCADE,
     		FOREIGN KEY (incident_id) REFERENCES $this->table (id) ON UPDATE CASCADE ON DELETE CASCADE 
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;" );

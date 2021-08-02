@@ -33,7 +33,7 @@ class Schedule extends _Component {
 				if(null === $location || $location->locality !== null){
 					continue;
 				}
-				$result = $this->plugin->repo->fetchLocation($location);
+				$this->plugin->repo->fetchLocation($location);
 
 			}
 		}

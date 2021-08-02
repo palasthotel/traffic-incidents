@@ -45,6 +45,6 @@ class Settings extends _Component {
 	}
 
 	public static function getMapBoxApiKey(){
-		return MAPBOX_API_TOKEN ?? "";
+		return defined('MAPBOX_API_TOKEN') ? MAPBOX_API_TOKEN : "";
 	}
 }
