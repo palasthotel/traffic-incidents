@@ -192,7 +192,7 @@ class IncidentsDatabase {
     					LEFT JOIN $this->tableIncidentEvents as ie on (i.id = ie.incident_id)
 						LEFT JOIN $this->tableEvents as e on (e.id = ie.event_id)
     					WHERE 
-    					      post_id = %d AND i.ts_modified > (SELECT DATE_SUB(max(ts_modified), INTERVAL 10 SECOND) FROM $this->table)
+    					      post_id = %d AND i.ts_modified > (SELECT DATE_SUB(max(ts_modified), INTERVAL 20 SECOND) FROM $this->table)
 							  $where
 						ORDER BY ie.incident_id DESC, e.code ASC 
     					", $args->post_id

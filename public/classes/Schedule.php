@@ -31,7 +31,7 @@ class Schedule extends _Component {
 			$counter = 0;
 			foreach ($incidents as $incident){
 				$location = $incident->getStartLocation();
-				if(null === $location || $location->locality !== null){
+				if(null === $location || !$location->isEmpty()){
 					continue;
 				}
 				$counter++;
