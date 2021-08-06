@@ -28,14 +28,18 @@ class Schedule extends _Component {
 			$this->plugin->repo->fetchIncidents( $post->ID );
 
 			$incidents = $this->plugin->repo->queryIncidents(IncidentQueryArgs::build($post->ID));
+			$counter = 0;
 			foreach ($incidents as $incident){
 				$location = $incident->getStartLocation();
 				if(null === $location || $location->locality !== null){
 					continue;
 				}
+				$counter++;
 				$this->plugin->repo->fetchLocation($location);
 
 			}
+			$count = count($incidents);
+			$this->plugin->log->add("Fetched locations for $counter of $count incidents");
 		}
 
 	}
