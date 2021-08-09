@@ -33,7 +33,7 @@ class Settings extends _Component {
 	}
 
 	public static function getTomTomApiKey() {
-		return get_option( Plugin::OPTION_TOM_TOM_API_KEY, "" );
+		return defined('TOM_TOM_API_KEY') ? TOM_TOM_API_KEY : get_option( Plugin::OPTION_TOM_TOM_API_KEY, "" );
 	}
 
 	/**
@@ -41,8 +41,15 @@ class Settings extends _Component {
 	 */
 	public function render_tom_tom_api_key() {
 		$val = Settings::getTomTomApiKey();
-		echo "<input type='text' value='$val' name='" . Plugin::OPTION_TOM_TOM_API_KEY . "' />";
+		$isConstant = defined('TOM_TOM_API_KEY');
+		$readonly = $isConstant ? "readonly='readonly'" : "";
+		echo "<input type='text' $readonly value='$val' name='" . Plugin::OPTION_TOM_TOM_API_KEY . "' class='regular-text' />";
+		if($isConstant){
+			$text = __("Api key is defined as a constant in code.", Plugin::DOMAIN);
+			echo "<p class='description'>$text</p>";
+		}
 	}
+
 
 	public static function getMapBoxApiKey(){
 		return defined('MAPBOX_API_TOKEN') ? MAPBOX_API_TOKEN : "";
