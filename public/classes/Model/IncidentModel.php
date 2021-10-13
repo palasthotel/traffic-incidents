@@ -12,7 +12,6 @@ use Exception;
  * @property string id
  * @property int traffic_model_id
  * @property int post_id
- * @property string incident_id
  * @property IncidentEventModel[] events
  * @property int category
  * @property int magnitudeOfDelay
