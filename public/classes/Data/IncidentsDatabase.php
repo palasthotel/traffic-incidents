@@ -8,19 +8,17 @@ use Palasthotel\WordPress\TrafficIncidents\Model\IncidentEventModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentLocation;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentModel;
 use Palasthotel\WordPress\TrafficIncidents\Model\IncidentQueryArgs;
-use Palasthotel\WordPress\TrafficIncidents\Plugin;
 use Palasthotel\WordPress\TrafficIncidents\Utils\Mapper;
-use wpdb;
 
-/**
- * @property wpdb wpdb
- * @property string table
- * @property string tableEvents
- * @property string tableIncidentEvents
- * @property string tableLocations
- * @property string tableIncidentLocations
- */
 class IncidentsDatabase {
+
+    /** @var wpdb */
+    public $wpdb;
+    public string $table;
+    public string $tableEvents;
+    public string $tableIncidentEvents;
+    public string $tableLocations;
+    public string $tableIncidentLocations;
 
 	const DATE_TIME_FORMAT = "Y-m-d h:i:s";
 

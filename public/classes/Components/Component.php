@@ -5,17 +5,15 @@ namespace Palasthotel\WordPress\TrafficIncidents\Components;
 
 /**
  * Class Component
- *
- * @property Plugin plugin
- *
  * @package Palasthotel\WordPress
  * @version 0.1.2
  */
 abstract class Component {
+
+    public Plugin $plugin;
+
 	/**
 	 * _Component constructor.
-	 *
-	 * @param Plugin $plugin
 	 */
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;

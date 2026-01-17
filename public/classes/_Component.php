@@ -3,10 +3,9 @@
 
 namespace Palasthotel\WordPress\TrafficIncidents;
 
-/**
- * @property Plugin plugin
- */
 abstract class _Component {
+
+    public Plugin $plugin;
 
 	public function __construct(Plugin $plugin) {
 		$this->plugin = $plugin;

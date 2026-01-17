@@ -22,17 +22,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once dirname( __FILE__ ) . "/vendor/autoload.php";
 
 
-/**
- * @property Assets assets
- * @property PostTypeTraffic postTypeTraffic
- * @property Repository repo
- * @property Settings settings
- * @property Schedule schedule
- * @property Templates templates
- * @property REST rest
- * @property Log log
- */
 class Plugin extends Components\Plugin {
+
+    public Assets $assets;
+    public PostTypeTraffic $postTypeTraffic;
+    public Repository $repo;
+    public Settings $settings;
+    public Schedule $schedule;
+    public Templates $templates;
+    public REST $rest;
+    public Log $log;
 
 	const DOMAIN = "traffic-incidents";
 

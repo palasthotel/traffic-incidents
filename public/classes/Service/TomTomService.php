@@ -8,11 +8,10 @@ use Palasthotel\WordPress\TrafficIncidents\Model\TomTomIncidentsRequestArgs;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficIncidentResponse;
 use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 
-/**
- * @property string baseUrl
- * @property string apiKey
- */
 class TomTomService {
+
+    public string $baseUrl;
+    public string $apiKey;
 
 	public function __construct( $apiKey ) {
 		$this->apiKey = $apiKey;

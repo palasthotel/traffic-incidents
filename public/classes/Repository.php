@@ -15,12 +15,11 @@ use Palasthotel\WordPress\TrafficIncidents\Model\TomTomTrafficResponse;
 use Palasthotel\WordPress\TrafficIncidents\Service\MapBoxService;
 use Palasthotel\WordPress\TrafficIncidents\Service\TomTomService;
 
-/**
- * @property TomTomService service
- * @property IncidentsDatabase database
- * @property MapBoxService mapBoxService
- */
 class Repository extends _Component {
+
+    public TomTomService $service;
+    public IncidentsDatabase $database;
+    public MapBoxService $mapBoxService;
 
 	public function onCreate() {
 		parent::onCreate();
