@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Traffic Incidents
  * Description:
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Palasthotel <rezeption@palasthotel.de> (Edward Bock)
  * Author URI: https://palasthotel.de
  * Text Domain: traffic-incidents
