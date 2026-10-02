@@ -14,7 +14,7 @@
   "dependencies": {
     "@wordpress/api-fetch": "^3.23.1",
     "@wordpress/element": "^2.20.2",
-    "@wordpress/scripts": "^14.1.1",
+    "@wordpress/scripts": "^36.0.0",
     "swr": "^0.5.5"
   },
   "repository": {
